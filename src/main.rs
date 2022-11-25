@@ -1,13 +1,13 @@
 use anyhow::Result;
 use clap::Parser;
 use quick_xml::Reader;
+use std::path::Path;
 use tokio;
 use tokio::fs::*;
 use tokio::io::{AsyncWriteExt, BufReader};
 use tokio_stream::StreamExt;
 use tracing::*;
 use tracing_subscriber;
-use std::path::Path;
 
 mod search;
 

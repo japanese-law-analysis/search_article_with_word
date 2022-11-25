@@ -445,7 +445,9 @@ pub async fn search_xml(
             sub_item: None,
             suppl_provision_title: tag
               .attributes()
-              .find(|res| encoding::decode(res.as_ref().unwrap().key.0, utf8).unwrap() == "Num")
+              .find(|res| {
+                encoding::decode(res.as_ref().unwrap().key.0, utf8).unwrap() == "AmendLawNum"
+              })
               .map(|res| {
                 encoding::decode(&res.unwrap().value, utf8)
                   .unwrap()
