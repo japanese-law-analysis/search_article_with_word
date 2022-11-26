@@ -2,7 +2,7 @@ use anyhow::Result;
 use encoding_rs::Encoding;
 use quick_xml::{encoding, events::Event, Reader};
 use serde::{Deserialize, Serialize};
-use tokio::{fs::File, io::BufReader};
+use tokio::{fs::File, io::{BufReader, AsyncReadExt}};
 use tracing::*;
 
 
@@ -449,3 +449,14 @@ pub async fn search_xml(
     chapter_data: lst,
   })
 }
+
+pub async fn get_law_from_artcile_info(info_file_path: &str) -> Result<Vec<LawParagraph>> {
+  let mut f = File::open(info_file_path).await?;
+  let mut buf = Vec::new();
+  f.read_to_end(&mut buf).await?;
+  let file_str = std::str::from_utf8(&buf)?;
+  let raw_data_lst = serde_json::from_str(&file_str)?;
+  Ok(raw_data_lst)
+}
+
+
