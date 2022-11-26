@@ -2,46 +2,9 @@ use anyhow::Result;
 use encoding_rs::Encoding;
 use quick_xml::{encoding, events::Event, Reader};
 use serde::{Deserialize, Serialize};
-use serde_json;
-use tokio::io::AsyncReadExt;
 use tokio::{fs::File, io::BufReader};
 use tracing::*;
 
-/// 元号
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-pub enum Era {
-  Meiji,
-  Taisho,
-  Showa,
-  Heisei,
-  Reiwa,
-}
-
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-pub struct Date {
-  pub era: Era,
-  pub year: u16,
-  pub month: Option<u8>,
-  pub day: Option<u8>,
-}
-
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize)]
-pub struct LawData {
-  pub date: Date,
-  pub file: String,
-  pub name: String,
-  pub num: String,
-  pub id: String,
-}
-
-pub async fn get_law_files_index(index_file_path: &str) -> Result<Vec<LawData>> {
-  let mut f = File::open(index_file_path).await?;
-  let mut buf = Vec::new();
-  f.read_to_end(&mut buf).await?;
-  let file_str = std::str::from_utf8(&buf)?;
-  let raw_data_lst = serde_json::from_str(&file_str)?;
-  Ok(raw_data_lst)
-}
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct LawParagraph {

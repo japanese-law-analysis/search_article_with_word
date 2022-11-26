@@ -16,3 +16,4 @@ tokio = { version = "1.22.0", features = ["full"] }
 tokio-stream = "0.1.11"
 tracing-subscriber = "0.3.16"
 serde = { version = "1.0.147", features = ["derive"] }
+listup_law = { git="https://github.com/japanese-law-analysis/listup_law.git", tag="0.3.0" }

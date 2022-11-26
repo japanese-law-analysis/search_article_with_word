@@ -8,6 +8,7 @@ use tokio::io::{AsyncWriteExt, BufReader};
 use tokio_stream::StreamExt;
 use tracing::*;
 use tracing_subscriber;
+use listup_law;
 
 mod search;
 
@@ -43,7 +44,7 @@ async fn main() -> Result<()> {
   init_logger().await?;
 
   info!("[START] get law data: {:?}", &args.index_file);
-  let raw_data_lst = search::get_law_files_index(&args.index_file).await?;
+  let raw_data_lst = listup_law::get_law_from_index(&args.index_file).await?;
   info!("[END] get law data: {:?}", &args.index_file);
 
   let mut output_file = File::create(&args.output).await?;
