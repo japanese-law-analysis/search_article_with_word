@@ -2,15 +2,10 @@ use anyhow::Result;
 use clap::Parser;
 use quick_xml::Reader;
 use std::path::Path;
-use tokio;
 use tokio::fs::*;
 use tokio::io::{AsyncWriteExt, BufReader};
 use tokio_stream::StreamExt;
 use tracing::*;
-use tracing_subscriber;
-use listup_law;
-
-use search_article_with_word;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
@@ -26,7 +21,7 @@ struct Args {
   index_file: String,
   /// 検索する単語
   #[clap(short, long)]
-  search_word: String,
+  search_words: Vec<String>,
 }
 
 async fn init_logger() -> Result<()> {
@@ -61,7 +56,8 @@ async fn main() -> Result<()> {
     let file_path = work_dir_path.join(law_data.file);
     info!("[START] work file: {:?}", file_path);
     let mut reader = Reader::from_reader(BufReader::new(File::open(&file_path).await?));
-    let chapter_data = search_article_with_word::search_xml(&args.search_word, &mut reader).await?;
+    let chapter_data =
+      search_article_with_word::search_xml(&args.search_words, &mut reader).await?;
     if !chapter_data.chapter_data.is_empty() {
       let chapter_data_lst_json_str = serde_json::to_string(&chapter_data)?;
       info!("[END] work file: {:?}", file_path);

@@ -2,9 +2,11 @@ use anyhow::Result;
 use encoding_rs::Encoding;
 use quick_xml::{encoding, events::Event, Reader};
 use serde::{Deserialize, Serialize};
-use tokio::{fs::File, io::{BufReader, AsyncReadExt}};
+use tokio::{
+  fs::File,
+  io::{AsyncReadExt, BufReader},
+};
 use tracing::*;
-
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct LawParagraph {
@@ -51,7 +53,7 @@ pub struct Chapter {
 /// 指定された単語が含まれる条があったとき、その条番号等のデータのみを保存する。
 /// 後でこのデータをもとに実際の条文を再度取得するのに使いたい。
 pub async fn search_xml(
-  search_str: &str,
+  search_str_lst: &[String],
   reader: &mut Reader<BufReader<File>>,
 ) -> Result<LawParagraph> {
   let utf8 = Encoding::for_label(b"utf-8").unwrap();
@@ -430,7 +432,7 @@ pub async fn search_xml(
           law_num = encoding::decode(&text.into_inner(), utf8)?.to_string();
         } else {
           let text_str = encoding::decode(&text.into_inner(), utf8)?.to_string();
-          let is_use_junyou = text_str.contains(search_str);
+          let is_use_junyou = search_str_lst.iter().any(|s| text_str.contains(s));
           info!("law_num: {}", &law_num);
           if is_use_junyou {
             lst.push(chapter_num.clone())
@@ -455,8 +457,6 @@ pub async fn get_law_from_artcile_info(info_file_path: &str) -> Result<Vec<LawPa
   let mut buf = Vec::new();
   f.read_to_end(&mut buf).await?;
   let file_str = std::str::from_utf8(&buf)?;
-  let raw_data_lst = serde_json::from_str(&file_str)?;
+  let raw_data_lst = serde_json::from_str(file_str)?;
   Ok(raw_data_lst)
 }
-
-
