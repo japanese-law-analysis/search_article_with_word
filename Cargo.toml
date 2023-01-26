@@ -3,10 +3,17 @@ name = "search_article_with_word"
 version = "0.2.0"
 edition = "2021"
 authors = ["Naoki Kaneko <puripuri2100@gmail.com>"]
+rust = "1.64.0"
+license = "MIT"
 repository = "https://github.com/japanese-law-analysis/search_article_with_word.git"
 description = "法律のXMLファイルがあるフォルダから、指定する単語が含まれている条項を探す"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[badges]
+github = { repository = "japanese-law-analysis/search_article_with_word", workflow = "Rust CI" }
 
 [dependencies]
 anyhow = "1.0.66"
