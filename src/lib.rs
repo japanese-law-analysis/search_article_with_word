@@ -463,7 +463,7 @@ pub async fn search_xml(
         }
       }
       Ok(Event::Eof) => break,
-      Err(e) => panic!("法令名APIの結果のXMLの解析中のエラー: {}", e),
+      Err(e) => panic!("法令名APIの結果のXMLの解析中のエラー: {e}"),
       _ => (),
     }
   }
